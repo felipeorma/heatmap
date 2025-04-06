@@ -67,7 +67,7 @@ df["Round"] = df["Round"].astype(str)
 
 with st.sidebar:
     st.header("🔎 Filters")
-    team_view = st.radio("Show Players From:", ["Cavalry", "Opponent"], index=0)
+    team_view = st.radio("👥 Show Players From:", ["Cavalry", "Opponent"], index=0)
     round_filter = st.selectbox("Match Round", ["All"] + sorted(df["Round"].unique().tolist()))
     side_filter = st.selectbox("Team Side", ["All"] + sorted(df["Local/Visit"].astype(str).unique().tolist()))
     opponent_filter = st.selectbox("Opponent", ["All"] + sorted(df["Cavalry/Opponent"].astype(str).unique().tolist()))
@@ -120,7 +120,7 @@ for idx, player_name in enumerate(players_list):
             if player_data["Team"] == "Cavalry":
                 st.image(player_data["Photo"], width=70, use_container_width=False)
             pos_group = get_position_group(player_data["Position"])
-            st.markdown(f"<div class='player-info'><strong>{player_name}</strong><br>Team: {player_data['Team']}<br><span class='position-badge {pos_group}'>{player_data['Position']}</span></div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='player-info'><strong>{player_name}</strong><br><span>{player_data['Team']}</span><br><span class='position-badge {pos_group}'>{player_data['Position']}</span></div>", unsafe_allow_html=True)
             st.markdown("</div>", unsafe_allow_html=True)
         except:
             st.warning("Image not found")
@@ -146,3 +146,4 @@ if selected_player:
             st.image(image, width=300)
         except:
             st.warning(f"⚠️ Could not load heatmap for Round {row['Round']}")
+
