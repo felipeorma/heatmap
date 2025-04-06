@@ -119,7 +119,8 @@ if "selected_player" in st.session_state:
     df_player = df[df["Player"] == player_filter].sort_values("Date", ascending=False)
     if st.button("🔙 Back to all players"):
         del st.session_state.selected_player
-        st.experimental_rerun()
+        st.experimental_set_query_params()
+        st.stop()
 
     st.subheader(f"📈 Performance Evolution - {player_filter}")
 
@@ -137,3 +138,4 @@ if "selected_player" in st.session_state:
             st.image(image, width=400)
         except:
             st.warning(f"⚠️ Could not load heatmap for Round {row['Round']}")
+
