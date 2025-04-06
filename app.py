@@ -7,19 +7,17 @@ from io import BytesIO
 
 st.set_page_config(layout="wide")
 
-st.title("\ud83c\udfc0 Player Field Visualization")
+st.title("⚽ Player Field Visualization")
 
 # Load all match files
 @st.cache_data
-
 def load_data():
-    files = ["data/partido_01.csv", "data/partido_02.csv"]  # Add more if needed
+    files = ["matches_example.csv"]
     df = pd.concat([pd.read_csv(f) for f in files])
     return df
 
 # Load football field image
 @st.cache_data
-
 def load_field():
     field_url = "https://raw.githubusercontent.com/tu_usuario/tu_repo/main/campo.png"
     response = requests.get(field_url)
@@ -29,12 +27,19 @@ def load_field():
 df = load_data()
 field = load_field()
 
-# Select match by date
-dates = df["fecha"].drop_duplicates().sort_values()
-selected_date = st.selectbox("Select a match date:", dates)
+# Select match round
+df["Round"] = df["Round"].astype(str)
+rounds = df["Round"].drop_duplicates().sort_values()
+selected_round = st.selectbox("Select a match round:", rounds)
 
-# Filter players by selected match
-df_match = df[df["fecha"] == selected_date]
+# Filter players by selected round
+df_match = df[df["Round"] == selected_round]
+
+# Dummy positions for plotting
+import numpy as np
+np.random.seed(42)
+df_match["pos_x"] = np.random.randint(10, 90, size=len(df_match))
+df_match["pos_y"] = np.random.randint(10, 90, size=len(df_match))
 
 # Display field with players
 fig = go.Figure()
@@ -57,11 +62,11 @@ fig.add_trace(go.Scatter(
     x=df_match["pos_x"],
     y=df_match["pos_y"],
     mode='markers+text',
-    marker=dict(size=16, color=df_match["equipo"].map({"Local": "blue", "Visitante": "red"})),
-    text=df_match["dorsal"],
+    marker=dict(size=16, color=df_match["Local/Visit"].map({"local": "blue", "visit": "red"})),
+    text=df_match["Player"],
     textposition="top center",
-    customdata=df_match[["nombre", "info_extra"]],
-    hovertemplate="<b>%{customdata[0]}</b><br>%{customdata[1]}<extra></extra>"
+    customdata=df_match[["Player", "Goals", "Assists"]],
+    hovertemplate="<b>%{customdata[0]}</b><br>Goals: %{customdata[1]} | Assists: %{customdata[2]}<extra></extra>"
 ))
 
 fig.update_layout(
@@ -74,17 +79,17 @@ fig.update_layout(
 st.plotly_chart(fig, use_container_width=True)
 
 # Select player to see evolution
-players = df["nombre"].drop_duplicates().sort_values()
+players = df["Player"].drop_duplicates().sort_values()
 selected_player = st.selectbox("Select a player to view their evolution:", players)
 
-df_player = df[df["nombre"] == selected_player].sort_values("fecha")
+df_player = df[df["Player"] == selected_player].sort_values("Round")
 
 st.subheader(f"Evolution of {selected_player}")
 
 for _, row in df_player.iterrows():
-    st.markdown(f"**{row['fecha']}** - {row['info_extra']}")
+    st.markdown(f"**Round {row['Round']}** - Minutes: {row['Minutes played']} | Goals: {row['Goals']} | Assists: {row['Assists']}")
     try:
-        response = requests.get(row["heatmap_path"])
+        response = requests.get(row["heatmap"])
         st.image(Image.open(BytesIO(response.content)), use_column_width=True)
     except:
-        st.warning(f"Could not load heatmap for {row['fecha']}")
+        st.warning(f"Could not load heatmap for Round {row['Round']}")
