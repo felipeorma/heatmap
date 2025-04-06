@@ -155,3 +155,13 @@ if selected_player:
             st.image(image, width=300)
         except:
             st.warning(f"⚠️ Could not load heatmap for Round {row['Round']}")
+
+
+
+st.markdown("""
+---
+<div class='footer'>
+  Created by **Felipe Ormaza**<br>
+  *Soccer Scout & Data Analyst*
+</div>
+""", unsafe_allow_html=True)
