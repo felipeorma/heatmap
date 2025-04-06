@@ -1,4 +1,4 @@
-import streamlit as st
+vimport streamlit as st
 import pandas as pd
 import requests
 from PIL import Image
@@ -71,6 +71,15 @@ with st.sidebar:
     player_filter = st.selectbox("Player", ["All"] + sorted(df["Player"].astype(str).unique().tolist()))
     date_filter = st.selectbox("Match Date", ["All"] + sorted(df["Date"].dt.date.astype(str).unique().tolist()))
 
+# FORM SECTION
+with st.expander("📬 Feedback / Suggestion Form"):
+    with st.form("feedback_form"):
+        name = st.text_input("Your Name")
+        feedback = st.text_area("Your feedback or suggestion:")
+        submitted = st.form_submit_button("Send")
+        if submitted:
+            st.success("✅ Thank you for your feedback!")
+
 df_filtered = df[df["Player"].astype(str) != "0"].copy()
 if round_filter != "All":
     df_filtered = df_filtered[df_filtered["Round"] == round_filter]
@@ -141,4 +150,3 @@ if selected_player:
             st.image(image, width=300)
         except:
             st.warning(f"⚠️ Could not load heatmap for Round {row['Round']}")
-
