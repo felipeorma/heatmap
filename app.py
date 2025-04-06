@@ -18,7 +18,7 @@ def load_data():
 # Load football field image
 @st.cache_data
 def load_field():
-    field_url = "https://raw.githubusercontent.com/tu_usuario/tu_repo/main/campo.png"
+    field_url = "https://upload.wikimedia.org/wikipedia/commons/5/5c/Soccer_field_transparent.svg"
     response = requests.get(field_url)
     return Image.open(BytesIO(response.content))
 
