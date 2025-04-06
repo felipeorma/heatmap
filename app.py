@@ -56,9 +56,15 @@ st.markdown("""
         .MF { background-color: #ffc107; color: black; }
         .FW { background-color: #dc3545; }
         .N_A { background-color: #6c757d; }
+        .footer {
+            margin-top: 3rem;
+            padding: 1rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: gray;
+        }
     </style>
 """, unsafe_allow_html=True)
-
 st.title("⚽ Cavalry FC - Player Heatmap Match Dashboard")
 
 @st.cache_data
