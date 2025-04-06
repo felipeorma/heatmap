@@ -101,39 +101,40 @@ def get_position_group(pos):
 
 st.subheader("🧍 Players")
 df_filtered = df_filtered.sort_values(by="Position", key=lambda x: x.apply(get_position_order))
+players_list = df_filtered["Player"].unique()
+selected_player = st.session_state.get("selected_player", None)
 
-for match_id, match_group in df_filtered.groupby(["Round", "Date", "Cavalry/Opponent"]):
-    round_num, match_date, opponent = match_id
-    st.markdown(f"### 📅 Round {round_num} - {match_date.date()} vs {opponent}")
+cols = st.columns(6)
+for idx, player_name in enumerate(players_list):
+    player_data = df_filtered[df_filtered["Player"] == player_name].iloc[0]
+    with cols[idx % 6]:
+        try:
+            st.markdown("<div class='player-card'>", unsafe_allow_html=True)
+            st.image(player_data["Photo"], width=70)
+            pos_group = get_position_group(player_data["Position"])
+            st.markdown(f"<div class='player-info'><strong>{player_name}</strong><br>Team: {player_data['Team']}<br><span class='position-badge {pos_group}'>{player_data['Position']}</span></div>", unsafe_allow_html=True)
+            st.markdown("</div>", unsafe_allow_html=True)
+        except:
+            st.warning("Image not found")
+        if st.button(f"Show Heatmaps - {player_name}"):
+            st.session_state.selected_player = player_name
+            selected_player = player_name
 
-    players_list = match_group["Player"].unique()
-    for player_name in players_list:
-        player_data = match_group[match_group["Player"] == player_name].iloc[0]
-        with st.container():
-            cols = st.columns([1, 4])
-            with cols[0]:
-                try:
-                    st.markdown("<div class='player-card'>", unsafe_allow_html=True)
-                    st.image(player_data["Photo"], width=70)
-                    pos_group = get_position_group(player_data["Position"])
-                    st.markdown(f"<div class='player-info'><strong>{player_name}</strong><br>Team: {player_data['Team']}<br><span class='position-badge {pos_group}'>{player_data['Position']}</span></div>", unsafe_allow_html=True)
-                    st.markdown("</div>", unsafe_allow_html=True)
-                except:
-                    st.warning("Image not found")
-            with cols[1]:
-                st.markdown(f"#### Heatmaps - {player_name}")
-                df_player = df[(df["Player"] == player_name) & (df["Round"] == round_num)].sort_values("Date", ascending=False)
-                for _, row in df_player.iterrows():
-                    st.markdown(f"**Round {row['Round']}** - Date: `{row['Date'].date()}` - Opponent: `{row['Cavalry/Opponent']}`")
-                    position = str(row.get("Position", "")).strip().upper()
-                    if position == "GK":
-                        st.markdown(f"Minutes: `{row['Minutes played']}` | Saves: `{row['Saves']}` | Goals Against: `{row['Goal Against']}`")
-                    else:
-                        st.markdown(f"Minutes: `{row['Minutes played']}` | Goals: `{row['Goals']}` | Assists: `{row['Assists']}`")
-                    try:
-                        headers = {"User-Agent": "Mozilla/5.0"}
-                        response = requests.get(row["heatmap"], headers=headers)
-                        image = Image.open(BytesIO(response.content))
-                        st.image(image, width=300)
-                    except:
-                        st.warning(f"⚠️ Could not load heatmap for Round {row['Round']}")
+if selected_player:
+    st.divider()
+    st.markdown(f"## 🔥 Heatmaps - {selected_player}")
+    df_player = df[df["Player"] == selected_player].sort_values("Date", ascending=False)
+    for _, row in df_player.iterrows():
+        st.markdown(f"**Round {row['Round']}** - Date: `{row['Date'].date()}` - Opponent: `{row['Cavalry/Opponent']}`")
+        position = str(row.get("Position", "")).strip().upper()
+        if position == "GK":
+            st.markdown(f"Minutes: `{row['Minutes played']}` | Saves: `{row['Saves']}` | Goals Against: `{row['Goal Against']}`")
+        else:
+            st.markdown(f"Minutes: `{row['Minutes played']}` | Goals: `{row['Goals']}` | Assists: `{row['Assists']}`")
+        try:
+            headers = {"User-Agent": "Mozilla/5.0"}
+            response = requests.get(row["heatmap"], headers=headers)
+            image = Image.open(BytesIO(response.content))
+            st.image(image, width=300)
+        except:
+            st.warning(f"⚠️ Could not load heatmap for Round {row['Round']}")
