@@ -64,6 +64,7 @@ with st.sidebar:
     st.header("🔎 Filters")
     round_filter = st.selectbox("Match Round", ["All"] + sorted(df["Round"].unique().tolist()))
     side_filter = st.selectbox("Team Side", ["All"] + sorted(df["Local/Visit"].astype(str).unique().tolist()))
+    opponent_filter = st.selectbox("Opponent", ["All"] + sorted(df["Cavalry/Opponent"].astype(str).unique().tolist()))
     player_filter = st.selectbox("Player", ["All"] + sorted(df["Player"].astype(str).unique().tolist()))
     date_filter = st.selectbox("Match Date", ["All"] + sorted(df["Date"].dt.date.astype(str).unique().tolist()))
 
@@ -72,6 +73,8 @@ if round_filter != "All":
     df_filtered = df_filtered[df_filtered["Round"] == round_filter]
 if side_filter != "All":
     df_filtered = df_filtered[df_filtered["Local/Visit"] == side_filter]
+if opponent_filter != "All":
+    df_filtered = df_filtered[df_filtered["Cavalry/Opponent"] == opponent_filter]
 if player_filter != "All":
     df_filtered = df_filtered[df_filtered["Player"] == player_filter]
 if date_filter != "All":
@@ -100,34 +103,3 @@ st.subheader("🧍 Players")
 df_filtered = df_filtered.sort_values(by="Position", key=lambda x: x.apply(get_position_order))
 players_list = df_filtered["Player"].unique()
 row = st.container()
-
-for player_name in players_list:
-    player_data = df_filtered[df_filtered["Player"] == player_name].iloc[0]
-    with st.container():
-        cols = st.columns([1, 4])
-        with cols[0]:
-            try:
-                st.markdown("<div class='player-card'>", unsafe_allow_html=True)
-                st.image(player_data["Photo"], width=70)
-                pos_group = get_position_group(player_data["Position"])
-                st.markdown(f"<div class='player-info'><strong>{player_name}</strong><br>Team: {player_data['Team']}<br><span class='position-badge {pos_group}'>{player_data['Position']}</span></div>", unsafe_allow_html=True)
-                st.markdown("</div>", unsafe_allow_html=True)
-            except:
-                st.warning("Image not found")
-        with cols[1]:
-            st.markdown(f"### Heatmaps - {player_name}")
-            df_player = df[df["Player"] == player_name].sort_values("Date", ascending=False)
-            for _, row in df_player.iterrows():
-                st.markdown(f"**Round {row['Round']}** - Date: `{row['Date'].date()}` - Opponent: `{row['Cavalry/Opponent']}`")
-                position = str(row.get("Position", "")).strip().upper()
-                if position == "GK":
-                    st.markdown(f"Minutes: `{row['Minutes played']}` | Saves: `{row['Saves']}` | Goals Against: `{row['Goal Against']}`")
-                else:
-                    st.markdown(f"Minutes: `{row['Minutes played']}` | Goals: `{row['Goals']}` | Assists: `{row['Assists']}`")
-                try:
-                    headers = {"User-Agent": "Mozilla/5.0"}
-                    response = requests.get(row["heatmap"], headers=headers)
-                    image = Image.open(BytesIO(response.content))
-                    st.image(image, width=300)
-                except:
-                    st.warning(f"⚠️ Could not load heatmap for Round {row['Round']}")
