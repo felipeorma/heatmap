@@ -41,7 +41,8 @@ for _, row in df_player.iterrows():
     st.markdown(f"**Round {row['Round']}** - Opponent: {row['Cavalry/Opponent']} | Minutes: {row['Minutes played']} | Goals: {row['Goals']} | Assists: {row['Assists']}")
     try:
         response = requests.get(row["heatmap"])
-        st.image(Image.open(BytesIO(response.content)), use_column_width=True)
+        image = Image.open(BytesIO(response.content))
+        st.image(image, width=350)
     except:
         st.warning(f"Could not load heatmap for Round {row['Round']}")
-
+        
