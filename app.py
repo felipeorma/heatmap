@@ -6,7 +6,7 @@ from io import BytesIO
 from st_aggrid import AgGrid, GridOptionsBuilder
 from streamlit_extras.metric_cards import style_metric_cards
 
-st.set_page_config(page_title="Cavalry Player Dashboard", layout="wide")
+st.set_page_config(page_title="Cavalry Player Heatmap Dashboard", layout="wide")
 
 st.markdown("""
     <style>
