@@ -9,9 +9,28 @@ st.set_page_config(page_title="Cavalry Player Heatmap Dashboard", layout="wide")
 st.markdown("""
     <style>
         .main { background-color: #f9f9f9; }
-        .stDataFrame div[data-testid="stHorizontalBlock"] { background-color: #ffffff; border-radius: 10px; padding: 1rem; }
-        .block-container { padding-top: 2rem; }
-        .css-1d391kg { padding: 1rem 1rem; text-align: center; }
+        .player-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 1rem;
+            padding: 1rem;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            width: 140px;
+        }
+        .player-img {
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+        }
+        .player-info {
+            text-align: center;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+        }
         .position-badge {
             display: inline-block;
             padding: 0.25em 0.6em;
@@ -30,7 +49,6 @@ st.markdown("""
 
 st.title("⚽ Cavalry FC - Player Heatmap Match Dashboard")
 
-# Load match data
 @st.cache_data
 def load_data():
     df = pd.read_csv("matches.csv")
@@ -38,18 +56,15 @@ def load_data():
     df = df.sort_values("Date", ascending=False)
     return df.fillna(0)
 
-# Load data
 df = load_data()
 df["Round"] = df["Round"].astype(str)
 
-# Sidebar filters
 with st.sidebar:
     st.header("🔎 Filters")
     round_filter = st.selectbox("Match Round", ["All"] + sorted(df["Round"].unique().tolist()))
     side_filter = st.selectbox("Team Side", ["All"] + sorted(df["Local/Visit"].astype(str).unique().tolist()))
     player_filter = st.selectbox("Player", ["All"] + sorted(df["Player"].astype(str).unique().tolist()))
 
-# Apply filters
 df_filtered = df[df["Player"].astype(str) != "0"].copy()
 if round_filter != "All":
     df_filtered = df_filtered[df_filtered["Round"] == round_filter]
@@ -58,7 +73,6 @@ if side_filter != "All":
 if player_filter != "All":
     df_filtered = df_filtered[df_filtered["Player"] == player_filter]
 
-# Agrupar por posición base (primera letra: GK, D, M, F)
 def get_position_group(pos):
     pos = str(pos).upper()
     if pos == "GK": return "GK"
@@ -67,7 +81,6 @@ def get_position_group(pos):
     if pos.startswith("F") or pos.endswith("W") or pos.endswith("CF"): return "FW"
     return "N_A"
 
-# Mostrar tarjetas si no se ha seleccionado un jugador
 if "selected_player" not in st.session_state:
     st.subheader("🧍 Players")
     df_filtered["PositionGroup"] = df_filtered["Position"].apply(get_position_group)
@@ -77,25 +90,22 @@ if "selected_player" not in st.session_state:
         players_pos = df_filtered[df_filtered["PositionGroup"] == group]["Player"].unique()
         if len(players_pos) > 0:
             st.markdown(f"### 🟢 {group}s")
-            for i in range(0, len(players_pos), 3):
-                cols = st.columns(3)
-                for j, col in enumerate(cols):
-                    if i + j < len(players_pos):
-                        player_name = players_pos[i + j]
-                        player_data = df_filtered[df_filtered["Player"] == player_name].iloc[0]
+            row = st.container()
+            with row:
+                cols = st.columns(len(players_pos))
+                for idx, player_name in enumerate(players_pos):
+                    player_data = df_filtered[df_filtered["Player"] == player_name].iloc[0]
+                    with cols[idx]:
                         try:
-                            col.image(player_data["Photo"], width=100)
-                            col.markdown(f"<div style='text-align:center'><strong>{player_name}</strong></div>", unsafe_allow_html=True)
-                            col.markdown(f"<div style='text-align:center'>Team: `{player_data['Team']}`</div>", unsafe_allow_html=True)
-                            full_position = str(player_data.get("Position", "N/A"))
-                            badge_class = get_position_group(full_position)
-                            col.markdown(f'<div style="text-align:center"><span class="position-badge {badge_class}">{full_position}</span></div>', unsafe_allow_html=True)
+                            st.markdown("<div class='player-card'>", unsafe_allow_html=True)
+                            st.image(player_data["Photo"], width=80)
+                            st.markdown(f"<div class='player-info'><strong>{player_name}</strong><br>Team: {player_data['Team']}<br><span class='position-badge {get_position_group(player_data['Position'])}'>{player_data['Position']}</span></div>", unsafe_allow_html=True)
+                            st.markdown("</div>", unsafe_allow_html=True)
                         except:
-                            col.warning("Image not found")
-                        if col.button(f"View Heatmaps - {player_name}"):
+                            st.warning("Image not found")
+                        if st.button(f"View Heatmaps - {player_name}"):
                             st.session_state.selected_player = player_name
 
-# Player heatmap evolution
 if "selected_player" in st.session_state:
     player_filter = st.session_state.selected_player
     df_player = df[df["Player"] == player_filter].sort_values("Date", ascending=False)
@@ -103,13 +113,11 @@ if "selected_player" in st.session_state:
 
     for _, row in df_player.iterrows():
         st.markdown(f"**Round {row['Round']}** - Date: `{row['Date'].date()}` - Opponent: `{row['Cavalry/Opponent']}`")
-
         position = str(row.get("Position", "")).strip().upper()
         if position == "GK":
             st.markdown(f"Minutes: `{row['Minutes played']}` | Saves: `{row['Saves']}` | Goals Against: `{row['Goal Against']}`")
         else:
             st.markdown(f"Minutes: `{row['Minutes played']}` | Goals: `{row['Goals']}` | Assists: `{row['Assists']}`")
-
         try:
             headers = {"User-Agent": "Mozilla/5.0"}
             response = requests.get(row["heatmap"], headers=headers)
@@ -117,3 +125,4 @@ if "selected_player" in st.session_state:
             st.image(image, width=400)
         except:
             st.warning(f"⚠️ Could not load heatmap for Round {row['Round']}")
+
