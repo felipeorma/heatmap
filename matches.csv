@@ -1,16 +1,16 @@
-Round,Date,Local/Visit,Cavalry/Opponent,Team,Player,heatmap,Minutes played,Goals,Assists,Saves,Goal Against
-1,4/5/2025,visit,Forge,Cavalry,Carducci,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-carducci.png,90,0,0,3,1
-1,4/5/2025,visit,Forge,Cavalry,Field,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-field.png,90,0,0,0,0
-1,4/5/2025,visit,Forge,Cavalry,Aird,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-aird.png,90,0,0,0,0
-1,4/5/2025,visit,Forge,Cavalry,Montgomery,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-montgomery.png,90,0,0,0,0
-1,4/9/2025,visit,Forge,Cavalry,Kamdem,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-kamdem.png,77,0,0,0,0
-1,4/5/2025,visit,Forge,Cavalry,Shome,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-shome.png,77,0,0,0,0
-1,4/5/2025,visit,Forge,Cavalry,Myroniuk,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-myroniuk.png,65,0,0,0,0
-1,4/5/2025,visit,Forge,Cavalry,Musse,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-musse.png,90,0,0,0,0
-1,4/5/2025,visit,Forge,Cavalry,Camargo,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-camargo.png,90,0,0,0,0
-1,4/5/2025,visit,Forge,Cavalry,Herdman,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-herdman.png,65,0,0,0,0
-1,4/5/2025,visit,Forge,Cavalry,Warschewski,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-warschewski.png,90,0,0,0,0
-1,4/5/2025,visit,Forge,Cavalry,Wahling,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-whaling.png,25,0,0,0,0
-1,4/5/2025,visit,Forge,Cavalry,Baldisimo,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-baldisimo.png,25,0,0,0,0
-1,4/5/2025,visit,Forge,Cavalry,Gherasimencov,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-gheasimencov.png,13,0,0,0,0
-1,4/5/2025,visit,Forge,Cavalry,Elva,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-elva.png,13,0,0,0,0
+Round,Date,Local/Visit,Cavalry/Opponent,Team,Player,Photo,heatmap,Minutes played,Goals,Assists,Saves,Goal Against
+1,4/5/2025,visit,Forge,Cavalry,Carducci,https://img.sofascore.com/api/v1/player/358754/image,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-carducci.png,90,0,0,3,1
+1,4/5/2025,visit,Forge,Cavalry,Field,https://img.sofascore.com/api/v1/player/839394/image,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-field.png,90,0,0,0,0
+1,4/5/2025,visit,Forge,Cavalry,Aird,https://img.sofascore.com/api/v1/player/190277/image,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-aird.png,90,0,0,0,0
+1,4/5/2025,visit,Forge,Cavalry,Montgomery,https://img.sofascore.com/api/v1/player/973285/image,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-montgomery.png,90,0,0,0,0
+1,4/9/2025,visit,Forge,Cavalry,Kamdem,https://img.sofascore.com/api/v1/player/884291/image,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-kamdem.png,77,0,0,0,0
+1,4/5/2025,visit,Forge,Cavalry,Shome,https://img.sofascore.com/api/v1/player/867708/image,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-shome.png,77,0,0,0,0
+1,4/5/2025,visit,Forge,Cavalry,Myroniuk,https://img.sofascore.com/api/v1/player/1406253/image,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-myroniuk.png,65,0,0,0,0
+1,4/5/2025,visit,Forge,Cavalry,Musse,https://img.sofascore.com/api/v1/player/358900/image,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-musse.png,90,0,0,0,0
+1,4/5/2025,visit,Forge,Cavalry,Camargo,https://img.sofascore.com/api/v1/player/155863/image,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-camargo.png,90,0,0,0,0
+1,4/5/2025,visit,Forge,Cavalry,Herdman,https://img.sofascore.com/api/v1/player/1493519/image,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-herdman.png,65,0,0,0,0
+1,4/5/2025,visit,Forge,Cavalry,Warschewski,https://img.sofascore.com/api/v1/player/845141/image,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-warschewski.png,90,0,0,0,0
+1,4/5/2025,visit,Forge,Cavalry,Wahling,https://img.sofascore.com/api/v1/player/845745/image,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-whaling.png,25,0,0,0,0
+1,4/5/2025,visit,Forge,Cavalry,Baldisimo,https://img.sofascore.com/api/v1/player/941662/image,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-baldisimo.png,25,0,0,0,0
+1,4/5/2025,visit,Forge,Cavalry,Gherasimencov,https://img.sofascore.com/api/v1/player/1513810/image,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-gheasimencov.png,13,0,0,0,0
+1,4/5/2025,visit,Forge,Cavalry,Elva,https://img.sofascore.com/api/v1/player/800333/image,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-elva.png,13,0,0,0,0
