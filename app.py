@@ -41,6 +41,7 @@ st.markdown("""
         }
         .GK { background-color: #28a745; }
         .DF { background-color: #007bff; }
+        .DMF { background-color: #17a2b8; }
         .MF { background-color: #ffc107; color: black; }
         .FW { background-color: #dc3545; }
         .N_A { background-color: #6c757d; }
@@ -76,6 +77,7 @@ if player_filter != "All":
 def get_position_group(pos):
     pos = str(pos).upper()
     if pos == "GK": return "GK"
+    if pos == "DMF": return "DMF"
     if pos.startswith("D"): return "DF"
     if pos.startswith("M"): return "MF"
     if pos.startswith("F") or pos.endswith("W") or pos.endswith("CF"): return "FW"
@@ -84,7 +86,7 @@ def get_position_group(pos):
 if "selected_player" not in st.session_state:
     st.subheader("🧍 Players")
     df_filtered["PositionGroup"] = df_filtered["Position"].apply(get_position_group)
-    position_groups = ["GK", "DF", "MF", "FW"]
+    position_groups = ["GK", "DF", "DMF", "MF", "FW"]
 
     for group in position_groups:
         players_pos = df_filtered[df_filtered["PositionGroup"] == group]["Player"].unique()
@@ -99,7 +101,8 @@ if "selected_player" not in st.session_state:
                         try:
                             st.markdown("<div class='player-card'>", unsafe_allow_html=True)
                             st.image(player_data["Photo"], width=80)
-                            st.markdown(f"<div class='player-info'><strong>{player_name}</strong><br>Team: {player_data['Team']}<br><span class='position-badge {get_position_group(player_data['Position'])}'>{player_data['Position']}</span></div>", unsafe_allow_html=True)
+                            pos_group = get_position_group(player_data["Position"])
+                            st.markdown(f"<div class='player-info'><strong>{player_name}</strong><br>Team: {player_data['Team']}<br><span class='position-badge {pos_group}'>{player_data['Position']}</span></div>", unsafe_allow_html=True)
                             st.markdown("</div>", unsafe_allow_html=True)
                         except:
                             st.warning("Image not found")
@@ -125,4 +128,3 @@ if "selected_player" in st.session_state:
             st.image(image, width=400)
         except:
             st.warning(f"⚠️ Could not load heatmap for Round {row['Round']}")
-
