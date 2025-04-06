@@ -20,11 +20,11 @@ st.markdown("""
             border-radius: 0.5rem;
             color: white;
         }
-        .GK { background-color: #28a745; }   /* Green */
-        .DF { background-color: #007bff; }   /* Blue */
-        .MF { background-color: #ffc107; }   /* Yellow */
-        .FW { background-color: #dc3545; }   /* Red */
-        .N_A { background-color: #6c757d; }  /* Gray */
+        .GK { background-color: #28a745; }
+        .DF { background-color: #007bff; }
+        .MF { background-color: #ffc107; }
+        .FW { background-color: #dc3545; }
+        .N_A { background-color: #6c757d; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -32,6 +32,7 @@ st.title("⚽ Cavalry FC - Player Heatmap Match Dashboard")
 
 # Load match data
 @st.cache_data
+
 def load_data():
     df = pd.read_csv("matches.csv")
     df["Date"] = pd.to_datetime(df["Date"], errors='coerce')
@@ -58,13 +59,24 @@ if side_filter != "All":
 if player_filter != "All":
     df_filtered = df_filtered[df_filtered["Player"] == player_filter]
 
-# Show player cards grouped by position
+# Agrupar por posición base (primera letra: GK, D, M, F)
+def get_position_group(pos):
+    pos = str(pos).upper()
+    if pos == "GK": return "GK"
+    if pos.startswith("D"): return "DF"
+    if pos.startswith("M"): return "MF"
+    if pos.startswith("F") or pos.endswith("W") or pos.endswith("CF"): return "FW"
+    return "N_A"
+
+# Mostrar tarjetas agrupadas
 st.subheader("🧍 Players")
-positions = ["GK", "DF", "MF", "FW"]
-for pos in positions:
-    players_pos = df_filtered[df_filtered["Position"].str.upper() == pos]["Player"].unique()
+df_filtered["PositionGroup"] = df_filtered["Position"].apply(get_position_group)
+position_groups = ["GK", "DF", "MF", "FW"]
+
+for group in position_groups:
+    players_pos = df_filtered[df_filtered["PositionGroup"] == group]["Player"].unique()
     if len(players_pos) > 0:
-        st.markdown(f"### 🟢 {pos}s")
+        st.markdown(f"### 🟢 {group}s")
         for i in range(0, len(players_pos), 3):
             cols = st.columns(3)
             for j, col in enumerate(cols):
@@ -72,12 +84,12 @@ for pos in positions:
                     player_name = players_pos[i + j]
                     player_data = df_filtered[df_filtered["Player"] == player_name].iloc[0]
                     try:
-                        col.image(player_data["photo"], use_column_width=True)
+                        col.image(player_data["Photo"], use_column_width=True)
                         col.markdown(f"**{player_name}**")
                         col.markdown(f"Team: `{player_data['Team']}`")
-                        position = str(player_data.get("Position", "N/A")).upper()
-                        badge_class = position if position in ["GK", "DF", "MF", "FW"] else "N_A"
-                        col.markdown(f'<span class="position-badge {badge_class}">{position}</span>', unsafe_allow_html=True)
+                        full_position = str(player_data.get("Position", "N/A"))
+                        badge_class = get_position_group(full_position)
+                        col.markdown(f'<span class="position-badge {badge_class}">{full_position}</span>', unsafe_allow_html=True)
                     except:
                         col.warning("Image not found")
                     if col.button(f"View Heatmaps - {player_name}"):
