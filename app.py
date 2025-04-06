@@ -11,7 +11,7 @@ st.markdown("""
         .main { background-color: #f9f9f9; }
         .stDataFrame div[data-testid="stHorizontalBlock"] { background-color: #ffffff; border-radius: 10px; padding: 1rem; }
         .block-container { padding-top: 2rem; }
-        .css-1d391kg { padding: 1rem 1rem; }
+        .css-1d391kg { padding: 1rem 1rem; text-align: center; }
         .position-badge {
             display: inline-block;
             padding: 0.25em 0.6em;
@@ -22,7 +22,7 @@ st.markdown("""
         }
         .GK { background-color: #28a745; }
         .DF { background-color: #007bff; }
-        .MF { background-color: #ffc107; }
+        .MF { background-color: #ffc107; color: black; }
         .FW { background-color: #dc3545; }
         .N_A { background-color: #6c757d; }
     </style>
@@ -32,7 +32,6 @@ st.title("⚽ Cavalry FC - Player Heatmap Match Dashboard")
 
 # Load match data
 @st.cache_data
-
 def load_data():
     df = pd.read_csv("matches.csv")
     df["Date"] = pd.to_datetime(df["Date"], errors='coerce')
@@ -68,32 +67,33 @@ def get_position_group(pos):
     if pos.startswith("F") or pos.endswith("W") or pos.endswith("CF"): return "FW"
     return "N_A"
 
-# Mostrar tarjetas agrupadas
-st.subheader("🧍 Players")
-df_filtered["PositionGroup"] = df_filtered["Position"].apply(get_position_group)
-position_groups = ["GK", "DF", "MF", "FW"]
+# Mostrar tarjetas si no se ha seleccionado un jugador
+if "selected_player" not in st.session_state:
+    st.subheader("🧍 Players")
+    df_filtered["PositionGroup"] = df_filtered["Position"].apply(get_position_group)
+    position_groups = ["GK", "DF", "MF", "FW"]
 
-for group in position_groups:
-    players_pos = df_filtered[df_filtered["PositionGroup"] == group]["Player"].unique()
-    if len(players_pos) > 0:
-        st.markdown(f"### 🟢 {group}s")
-        for i in range(0, len(players_pos), 3):
-            cols = st.columns(3)
-            for j, col in enumerate(cols):
-                if i + j < len(players_pos):
-                    player_name = players_pos[i + j]
-                    player_data = df_filtered[df_filtered["Player"] == player_name].iloc[0]
-                    try:
-                        col.image(player_data["Photo"], width=100)
-                        col.markdown(f"**{player_name}**")
-                        col.markdown(f"Team: `{player_data['Team']}`")
-                        full_position = str(player_data.get("Position", "N/A"))
-                        badge_class = get_position_group(full_position)
-                        col.markdown(f'<span class="position-badge {badge_class}">{full_position}</span>', unsafe_allow_html=True)
-                    except:
-                        col.warning("Image not found")
-                    if col.button(f"View Heatmaps - {player_name}"):
-                        st.session_state.selected_player = player_name
+    for group in position_groups:
+        players_pos = df_filtered[df_filtered["PositionGroup"] == group]["Player"].unique()
+        if len(players_pos) > 0:
+            st.markdown(f"### 🟢 {group}s")
+            for i in range(0, len(players_pos), 3):
+                cols = st.columns(3)
+                for j, col in enumerate(cols):
+                    if i + j < len(players_pos):
+                        player_name = players_pos[i + j]
+                        player_data = df_filtered[df_filtered["Player"] == player_name].iloc[0]
+                        try:
+                            col.image(player_data["Photo"], width=100)
+                            col.markdown(f"<div style='text-align:center'><strong>{player_name}</strong></div>", unsafe_allow_html=True)
+                            col.markdown(f"<div style='text-align:center'>Team: `{player_data['Team']}`</div>", unsafe_allow_html=True)
+                            full_position = str(player_data.get("Position", "N/A"))
+                            badge_class = get_position_group(full_position)
+                            col.markdown(f'<div style="text-align:center"><span class="position-badge {badge_class}">{full_position}</span></div>', unsafe_allow_html=True)
+                        except:
+                            col.warning("Image not found")
+                        if col.button(f"View Heatmaps - {player_name}"):
+                            st.session_state.selected_player = player_name
 
 # Player heatmap evolution
 if "selected_player" in st.session_state:
