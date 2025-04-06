@@ -56,10 +56,7 @@ for i in range(0, len(players_to_show), 3):
             player_name = players_to_show[i + j]
             player_data = df_filtered[df_filtered["Player"] == player_name].iloc[0]
             try:
-                headers = {"User-Agent": "Mozilla/5.0"}
-                response = requests.get(player_data["photo"], headers=headers)
-                img = Image.open(BytesIO(response.content))
-                col.image(img, use_column_width=True)
+                col.image(player_data["photo"], use_column_width=True)
                 col.markdown(f"**{player_name}**")
                 col.markdown(f"Team: `{player_data['Team']}`")
                 col.markdown(f"Position: `{player_data.get('Position', 'N/A')}`")
@@ -84,3 +81,4 @@ if "selected_player" in st.session_state:
             st.image(image, width=400)
         except:
             st.warning(f"⚠️ Could not load heatmap for Round {row['Round']}")
+
