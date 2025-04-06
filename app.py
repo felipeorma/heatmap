@@ -84,7 +84,7 @@ for group in position_groups:
                     player_name = players_pos[i + j]
                     player_data = df_filtered[df_filtered["Player"] == player_name].iloc[0]
                     try:
-                        col.image(player_data["Photo"], use_column_width=True)
+                        col.image(player_data["Photo"], width=100)
                         col.markdown(f"**{player_name}**")
                         col.markdown(f"Team: `{player_data['Team']}`")
                         full_position = str(player_data.get("Position", "N/A"))
