@@ -12,6 +12,19 @@ st.markdown("""
         .stDataFrame div[data-testid="stHorizontalBlock"] { background-color: #ffffff; border-radius: 10px; padding: 1rem; }
         .block-container { padding-top: 2rem; }
         .css-1d391kg { padding: 1rem 1rem; }
+        .position-badge {
+            display: inline-block;
+            padding: 0.25em 0.6em;
+            font-size: 0.75em;
+            font-weight: bold;
+            border-radius: 0.5rem;
+            color: white;
+        }
+        .GK { background-color: #28a745; }   /* Green */
+        .DF { background-color: #007bff; }   /* Blue */
+        .MF { background-color: #ffc107; }   /* Yellow */
+        .FW { background-color: #dc3545; }   /* Red */
+        .N_A { background-color: #6c757d; }  /* Gray */
     </style>
 """, unsafe_allow_html=True)
 
@@ -59,7 +72,9 @@ for i in range(0, len(players_to_show), 3):
                 col.image(player_data["photo"], use_column_width=True)
                 col.markdown(f"**{player_name}**")
                 col.markdown(f"Team: `{player_data['Team']}`")
-                col.markdown(f"Position: `{player_data.get('Position', 'N/A')}`")
+                position = str(player_data.get("Position", "N/A")).upper()
+                badge_class = position if position in ["GK", "DF", "MF", "FW"] else "N_A"
+                col.markdown(f'<span class="position-badge {badge_class}">{position}</span>', unsafe_allow_html=True)
             except:
                 col.warning("Image not found")
             if col.button(f"View Heatmaps - {player_name}"):
@@ -74,8 +89,8 @@ if "selected_player" in st.session_state:
     for _, row in df_player.iterrows():
         st.markdown(f"**Round {row['Round']}** - Date: `{row['Date'].date()}` - Opponent: `{row['Cavalry/Opponent']}`")
 
-        position = row.get("Position", "")
-        if str(position).strip().upper() == "GK":
+        position = str(row.get("Position", "")).strip().upper()
+        if position == "GK":
             st.markdown(f"Minutes: `{row['Minutes played']}` | Saves: `{row['Saves']}` | Goals Against: `{row['Goal Against']}`")
         else:
             st.markdown(f"Minutes: `{row['Minutes played']}` | Goals: `{row['Goals']}` | Assists: `{row['Assists']}`")
@@ -87,3 +102,5 @@ if "selected_player" in st.session_state:
             st.image(image, width=400)
         except:
             st.warning(f"⚠️ Could not load heatmap for Round {row['Round']}")
+
+
