@@ -14,3 +14,5 @@ Round,Date,Local/Visit,Cavalry/Opponent,Team,Position,Player,Photo,heatmap,Minut
 1,4/5/2025,visit,Forge,Cavalry,DF,Baldisimo,https://img.sofascore.com/api/v1/player/941662/image,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-baldisimo.png,25,0,0,0,0
 1,4/5/2025,visit,Forge,Cavalry,LB,Gherasimencov,https://img.sofascore.com/api/v1/player/1513810/image,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-gherasimencov.png,13,0,0,0,0
 1,4/5/2025,visit,Forge,Cavalry,CF,Elva,https://img.sofascore.com/api/v1/player/800333/image,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-elva.png,13,0,0,0,0
+2,4/5/2025,visit,Forge,Forge,LW,Babouli,,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-babouli.png,90,1,0,0,0
+3,4/5/2025,visit,Forge,Forge,CF,Wright,,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-wright.png,81,0,0,0,0
