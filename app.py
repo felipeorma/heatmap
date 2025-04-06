@@ -74,7 +74,8 @@ if "selected_player" in st.session_state:
     for _, row in df_player.iterrows():
         st.markdown(f"**Round {row['Round']}** - Date: `{row['Date'].date()}` - Opponent: `{row['Cavalry/Opponent']}`")
 
-        if row['Position'] == 'GK':
+        position = row.get("Position", "")
+        if str(position).strip().upper() == "GK":
             st.markdown(f"Minutes: `{row['Minutes played']}` | Saves: `{row['Saves']}` | Goals Against: `{row['Goal Against']}`")
         else:
             st.markdown(f"Minutes: `{row['Minutes played']}` | Goals: `{row['Goals']}` | Assists: `{row['Assists']}`")
