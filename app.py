@@ -58,27 +58,30 @@ if side_filter != "All":
 if player_filter != "All":
     df_filtered = df_filtered[df_filtered["Player"] == player_filter]
 
-# Show player cards
+# Show player cards grouped by position
 st.subheader("🧍 Players")
-players_to_show = df_filtered["Player"].unique()
-
-for i in range(0, len(players_to_show), 3):
-    cols = st.columns(3)
-    for j, col in enumerate(cols):
-        if i + j < len(players_to_show):
-            player_name = players_to_show[i + j]
-            player_data = df_filtered[df_filtered["Player"] == player_name].iloc[0]
-            try:
-                col.image(player_data["photo"], use_column_width=True)
-                col.markdown(f"**{player_name}**")
-                col.markdown(f"Team: `{player_data['Team']}`")
-                position = str(player_data.get("Position", "N/A")).upper()
-                badge_class = position if position in ["GK", "DF", "MF", "FW"] else "N_A"
-                col.markdown(f'<span class="position-badge {badge_class}">{position}</span>', unsafe_allow_html=True)
-            except:
-                col.warning("Image not found")
-            if col.button(f"View Heatmaps - {player_name}"):
-                st.session_state.selected_player = player_name
+positions = ["GK", "DF", "MF", "FW"]
+for pos in positions:
+    players_pos = df_filtered[df_filtered["Position"].str.upper() == pos]["Player"].unique()
+    if len(players_pos) > 0:
+        st.markdown(f"### 🟢 {pos}s")
+        for i in range(0, len(players_pos), 3):
+            cols = st.columns(3)
+            for j, col in enumerate(cols):
+                if i + j < len(players_pos):
+                    player_name = players_pos[i + j]
+                    player_data = df_filtered[df_filtered["Player"] == player_name].iloc[0]
+                    try:
+                        col.image(player_data["photo"], use_column_width=True)
+                        col.markdown(f"**{player_name}**")
+                        col.markdown(f"Team: `{player_data['Team']}`")
+                        position = str(player_data.get("Position", "N/A")).upper()
+                        badge_class = position if position in ["GK", "DF", "MF", "FW"] else "N_A"
+                        col.markdown(f'<span class="position-badge {badge_class}">{position}</span>', unsafe_allow_html=True)
+                    except:
+                        col.warning("Image not found")
+                    if col.button(f"View Heatmaps - {player_name}"):
+                        st.session_state.selected_player = player_name
 
 # Player heatmap evolution
 if "selected_player" in st.session_state:
@@ -102,5 +105,3 @@ if "selected_player" in st.session_state:
             st.image(image, width=400)
         except:
             st.warning(f"⚠️ Could not load heatmap for Round {row['Round']}")
-
-
