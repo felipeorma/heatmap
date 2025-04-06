@@ -60,7 +60,7 @@ st.markdown("""
             margin-top: 3rem;
             padding: 1rem;
             text-align: center;
-            font-size: 0.8rem;
+            font-size: 1rem;
             color: gray;
         }
     </style>
@@ -167,7 +167,7 @@ if selected_player:
 st.markdown("""
 ---
 <div class='footer'>
-  Created by **Felipe Ormaza**<br>
-  *Soccer Scout & Data Analyst*
+  Created by **Felipe Ormazabal<br>
+  Soccer Scout & Data Analyst
 </div>
 """, unsafe_allow_html=True)
