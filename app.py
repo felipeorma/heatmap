@@ -19,17 +19,17 @@ df = load_data()
 df["Round"] = df["Round"].astype(str)
 
 # Filters
-rounds = ["All"] + sorted(df["Round"].unique().tolist())
+rounds = ["All"] + sorted(df["Round"].dropna().unique().tolist())
 round_filter = st.selectbox("Select match round:", rounds)
 
-sides = ["All"] + sorted(df["Local/Visit"].unique().tolist())
+sides = ["All"] + sorted(df["Local/Visit"].dropna().unique().tolist())
 side_filter = st.selectbox("Select team side:", sides)
 
-players = ["All"] + sorted(df["Player"].unique().tolist())
+players = ["All"] + sorted(df["Player"].dropna().unique().tolist())
 player_filter = st.selectbox("Select player:", players)
 
 # Apply filters
-df_filtered = df.copy()
+df_filtered = df.dropna(subset=["Player"]).copy()
 if round_filter != "All":
     df_filtered = df_filtered[df_filtered["Round"] == round_filter]
 if side_filter != "All":
@@ -39,7 +39,7 @@ if player_filter != "All":
 
 # Show table
 st.subheader("Filtered Match Data")
-st.dataframe(df_filtered[["Round", "Player", "Cavalry/Opponent", "Local/Visit", "Minutes played", "Goals", "Assists"]].reset_index(drop=True))
+st.dataframe(df_filtered[["Round", "Player", "Team", "Cavalry/Opponent", "Local/Visit", "Minutes played", "Goals", "Assists", "Saves", "Goal Against"]].reset_index(drop=True))
 
 # If a single player selected, show evolution
 if player_filter != "All":
@@ -48,7 +48,7 @@ if player_filter != "All":
     st.subheader(f"Evolution of {player_filter}")
 
     for _, row in df_player.iterrows():
-        st.markdown(f"**Round {row['Round']}** - Opponent: {row['Cavalry/Opponent']} | Minutes: {row['Minutes played']} | Goals: {row['Goals']} | Assists: {row['Assists']}")
+        st.markdown(f"**Round {row['Round']}** - Opponent: {row['Cavalry/Opponent']} | Minutes: {row['Minutes played']} | Goals: {row['Goals']} | Assists: {row['Assists']} | Saves: {row['Saves']} | Goals Against: {row['Goal Against']}")
         try:
             response = requests.get(row["heatmap"])
             image = Image.open(BytesIO(response.content))
