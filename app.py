@@ -19,17 +19,17 @@ df = load_data()
 df["Round"] = df["Round"].astype(str)
 
 # Filters
-rounds = ["All"] + sorted(df["Round"].dropna().unique().tolist())
+rounds = ["All"] + sorted(df["Round"].unique().tolist())
 round_filter = st.selectbox("Select match round:", rounds)
 
-sides = ["All"] + sorted(df["Local/Visit"].dropna().unique().tolist())
+sides = ["All"] + sorted(df["Local/Visit"].astype(str).unique().tolist())
 side_filter = st.selectbox("Select team side:", sides)
 
-players = ["All"] + sorted(df["Player"].dropna().unique().tolist())
+players = ["All"] + sorted(df["Player"].astype(str).unique().tolist())
 player_filter = st.selectbox("Select player:", players)
 
 # Apply filters
-df_filtered = df[df["Player"] != 0].copy()
+df_filtered = df[df["Player"].astype(str) != "0"].copy()
 if round_filter != "All":
     df_filtered = df_filtered[df_filtered["Round"] == round_filter]
 if side_filter != "All":
