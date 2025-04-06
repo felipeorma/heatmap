@@ -3,8 +3,6 @@ import pandas as pd
 import requests
 from PIL import Image
 from io import BytesIO
-from st_aggrid import AgGrid, GridOptionsBuilder
-from streamlit_extras.metric_cards import style_metric_cards
 
 st.set_page_config(page_title="Cavalry Player Heatmap Dashboard", layout="wide")
 
@@ -21,8 +19,11 @@ st.title("⚽ Cavalry FC - Player Heatmap Match Dashboard")
 
 # Load match data
 @st.cache_data
+
 def load_data():
     df = pd.read_csv("matches.csv")
+    df["Date"] = pd.to_datetime(df["Date"], errors='coerce')
+    df = df.sort_values("Date", ascending=False)
     return df.fillna(0)
 
 # Load data
@@ -45,33 +46,36 @@ if side_filter != "All":
 if player_filter != "All":
     df_filtered = df_filtered[df_filtered["Player"] == player_filter]
 
-# Summary metrics
-col1, col2, col3 = st.columns(3)
-col1.metric("Total Players", df_filtered["Player"].nunique())
-col2.metric("Total Goals", int(df_filtered["Goals"].sum()))
-col3.metric("Total Assists", int(df_filtered["Assists"].sum()))
-style_metric_cards()
+# Show player cards
+st.subheader("🧍 Players")
+players_to_show = df_filtered["Player"].unique()
 
-# Display filtered table with AgGrid
-st.subheader("📋 Filtered Match Data")
-gb = GridOptionsBuilder.from_dataframe(df_filtered)
-gb.configure_pagination(paginationAutoPageSize=True)
-gb.configure_default_column(groupable=True, value=True, enableRowGroup=True, editable=False)
-gridOptions = gb.build()
-AgGrid(df_filtered[["Round", "Player", "Team", "Cavalry/Opponent", "Local/Visit", "Minutes played", "Goals", "Assists", "Saves", "Goal Against"]], gridOptions=gridOptions, theme='streamlit')
+for i in range(0, len(players_to_show), 3):
+    cols = st.columns(3)
+    for j, col in enumerate(cols):
+        if i + j < len(players_to_show):
+            player_name = players_to_show[i + j]
+            player_data = df_filtered[df_filtered["Player"] == player_name].iloc[0]
+            try:
+                col.image(player_data["photo"], caption=player_name, use_column_width=True)
+            except:
+                col.warning("Image not found")
+            if col.button(f"View Heatmaps - {player_name}"):
+                st.session_state.selected_player = player_name
 
-# Player evolution view
-if player_filter != "All":
-    df_player = df[df["Player"] == player_filter].sort_values("Round")
+# Player heatmap evolution
+if "selected_player" in st.session_state:
+    player_filter = st.session_state.selected_player
+    df_player = df[df["Player"] == player_filter].sort_values("Date", ascending=False)
     st.subheader(f"📈 Performance Evolution - {player_filter}")
 
     for _, row in df_player.iterrows():
-        with st.container():
-            st.markdown(f"**Round {row['Round']}** - Opponent: `{row['Cavalry/Opponent']}`")
-            st.markdown(f"Minutes: `{row['Minutes played']}` | Goals: `{row['Goals']}` | Assists: `{row['Assists']}` | Saves: `{row['Saves']}` | Goals Against: `{row['Goal Against']}`")
-            try:
-                response = requests.get(row["heatmap"])
-                image = Image.open(BytesIO(response.content))
-                st.image(image, width=400)
-            except:
-                st.warning(f"⚠️ Could not load heatmap for Round {row['Round']}")
+        st.markdown(f"**Round {row['Round']}** - Date: `{row['Date'].date()}` - Opponent: `{row['Cavalry/Opponent']}`")
+        st.markdown(f"Minutes: `{row['Minutes played']}` | Goals: `{row['Goals']}` | Assists: `{row['Assists']}` | Saves: `{row['Saves']}` | Goals Against: `{row['Goal Against']}`")
+        try:
+            response = requests.get(row["heatmap"])
+            image = Image.open(BytesIO(response.content))
+            st.image(image, width=400)
+        except:
+            st.warning(f"⚠️ Could not load heatmap for Round {row['Round']}")
+
