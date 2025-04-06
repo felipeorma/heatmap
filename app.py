@@ -13,28 +13,28 @@ st.markdown("""
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin: 1rem;
-            padding: 1rem;
+            margin: 0.5rem;
+            padding: 0.5rem;
             background-color: #ffffff;
             border-radius: 10px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-            width: 140px;
+            width: 120px;
         }
         .player-img {
             border-radius: 50%;
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             object-fit: cover;
         }
         .player-info {
             text-align: center;
-            margin-top: 0.5rem;
-            font-size: 0.85rem;
+            margin-top: 0.3rem;
+            font-size: 0.8rem;
         }
         .position-badge {
             display: inline-block;
             padding: 0.25em 0.6em;
-            font-size: 0.75em;
+            font-size: 0.7em;
             font-weight: bold;
             border-radius: 0.5rem;
             color: white;
@@ -74,6 +74,16 @@ if side_filter != "All":
 if player_filter != "All":
     df_filtered = df_filtered[df_filtered["Player"] == player_filter]
 
+def get_position_order(pos):
+    pos = str(pos).upper()
+    if pos == "GK": return 0
+    if pos == "DF" or pos == "RB" or pos == "LB": return 1
+    if pos == "DMF": return 2
+    if pos == "MF" or pos == "AMF" or pos == "CMF": return 3
+    if pos == "RW" or pos == "LW": return 4
+    if pos == "FW" or pos == "CF" or pos.startswith("F"): return 5
+    return 99
+
 def get_position_group(pos):
     pos = str(pos).upper()
     if pos == "GK": return "GK"
@@ -85,33 +95,32 @@ def get_position_group(pos):
 
 if "selected_player" not in st.session_state:
     st.subheader("🧍 Players")
-    df_filtered["PositionGroup"] = df_filtered["Position"].apply(get_position_group)
-    position_groups = ["GK", "DF", "DMF", "MF", "FW"]
-
-    for group in position_groups:
-        players_pos = df_filtered[df_filtered["PositionGroup"] == group]["Player"].unique()
-        if len(players_pos) > 0:
-            st.markdown(f"### 🟢 {group}s")
-            row = st.container()
-            with row:
-                cols = st.columns(len(players_pos))
-                for idx, player_name in enumerate(players_pos):
-                    player_data = df_filtered[df_filtered["Player"] == player_name].iloc[0]
-                    with cols[idx]:
-                        try:
-                            st.markdown("<div class='player-card'>", unsafe_allow_html=True)
-                            st.image(player_data["Photo"], width=80)
-                            pos_group = get_position_group(player_data["Position"])
-                            st.markdown(f"<div class='player-info'><strong>{player_name}</strong><br>Team: {player_data['Team']}<br><span class='position-badge {pos_group}'>{player_data['Position']}</span></div>", unsafe_allow_html=True)
-                            st.markdown("</div>", unsafe_allow_html=True)
-                        except:
-                            st.warning("Image not found")
-                        if st.button(f"View Heatmaps - {player_name}"):
-                            st.session_state.selected_player = player_name
+    df_filtered = df_filtered.sort_values(by="Position", key=lambda x: x.apply(get_position_order))
+    players_list = df_filtered["Player"].unique()
+    row = st.container()
+    with row:
+        cols = st.columns(len(players_list))
+        for idx, player_name in enumerate(players_list):
+            player_data = df_filtered[df_filtered["Player"] == player_name].iloc[0]
+            with cols[idx]:
+                try:
+                    st.markdown("<div class='player-card'>", unsafe_allow_html=True)
+                    st.image(player_data["Photo"], width=70)
+                    pos_group = get_position_group(player_data["Position"])
+                    st.markdown(f"<div class='player-info'><strong>{player_name}</strong><br>Team: {player_data['Team']}<br><span class='position-badge {pos_group}'>{player_data['Position']}</span></div>", unsafe_allow_html=True)
+                    st.markdown("</div>", unsafe_allow_html=True)
+                except:
+                    st.warning("Image not found")
+                if st.button(f"View Heatmaps - {player_name}"):
+                    st.session_state.selected_player = player_name
 
 if "selected_player" in st.session_state:
     player_filter = st.session_state.selected_player
     df_player = df[df["Player"] == player_filter].sort_values("Date", ascending=False)
+    if st.button("🔙 Back to all players"):
+        del st.session_state.selected_player
+        st.experimental_rerun()
+
     st.subheader(f"📈 Performance Evolution - {player_filter}")
 
     for _, row in df_player.iterrows():
