@@ -113,7 +113,7 @@ for idx, player_name in enumerate(players_list):
     with cols[idx % 6]:
         try:
             st.markdown("<div class='player-card'>", unsafe_allow_html=True)
-            st.image(player_data["Photo"], width=70, use_column_width=False)
+            st.image(player_data["Photo"], width=70, use_container_width=False)
             pos_group = get_position_group(player_data["Position"])
             st.markdown(f"<div class='player-info'><strong>{player_name}</strong><br>Team: {player_data['Team']}<br><span class='position-badge {pos_group}'>{player_data['Position']}</span></div>", unsafe_allow_html=True)
             st.markdown("</div>", unsafe_allow_html=True)
