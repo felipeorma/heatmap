@@ -48,6 +48,12 @@ st.markdown("""
         .MF { background-color: #ffc107; color: black; }
         .FW { background-color: #dc3545; }
         .N_A { background-color: #6c757d; }
+        .footer {
+            margin-top: 4rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #666;
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -70,15 +76,6 @@ with st.sidebar:
     opponent_filter = st.selectbox("Opponent", ["All"] + sorted(df["Cavalry/Opponent"].astype(str).unique().tolist()))
     player_filter = st.selectbox("Player", ["All"] + sorted(df["Player"].astype(str).unique().tolist()))
     date_filter = st.selectbox("Match Date", ["All"] + sorted(df["Date"].dt.date.astype(str).unique().tolist()))
-
-# FORM SECTION
-with st.expander("📬 Feedback / Suggestion Form"):
-    with st.form("feedback_form"):
-        name = st.text_input("Your Name")
-        feedback = st.text_area("Your feedback or suggestion:")
-        submitted = st.form_submit_button("Send")
-        if submitted:
-            st.success("✅ Thank you for your feedback!")
 
 df_filtered = df[df["Player"].astype(str) != "0"].copy()
 if round_filter != "All":
@@ -150,3 +147,11 @@ if selected_player:
             st.image(image, width=300)
         except:
             st.warning(f"⚠️ Could not load heatmap for Round {row['Round']}")
+
+# Footer signature
+st.markdown("""
+<div class='footer'>
+    Made by **Felipe Ormazabal**  |  <em>Soccer Scout / Data Analyst</em>
+</div>
+""", unsafe_allow_html=True)
+
