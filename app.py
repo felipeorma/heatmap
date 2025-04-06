@@ -18,31 +18,40 @@ def load_data():
 df = load_data()
 df["Round"] = df["Round"].astype(str)
 
-# Select round
-rounds = df["Round"].drop_duplicates().sort_values()
-selected_round = st.selectbox("Select a match round:", rounds)
+# Filters
+rounds = ["All"] + sorted(df["Round"].unique().tolist())
+round_filter = st.selectbox("Select match round:", rounds)
 
-# Filter by round
-df_match = df[df["Round"] == selected_round]
+sides = ["All"] + sorted(df["Local/Visit"].unique().tolist())
+side_filter = st.selectbox("Select team side:", sides)
 
-# Select player from filtered round
-players = df_match["Player"].drop_duplicates().sort_values()
-selected_player = st.selectbox("Select a player from this round:", players)
+players = ["All"] + sorted(df["Player"].unique().tolist())
+player_filter = st.selectbox("Select player:", players)
 
-# Show player list for the round
-st.subheader(f"Players - Round {selected_round}")
-st.dataframe(df_match[["Player", "Cavalry/Opponent", "Local/Visit", "Minutes played", "Goals", "Assists"]].reset_index(drop=True))
+# Apply filters
+df_filtered = df.copy()
+if round_filter != "All":
+    df_filtered = df_filtered[df_filtered["Round"] == round_filter]
+if side_filter != "All":
+    df_filtered = df_filtered[df_filtered["Local/Visit"] == side_filter]
+if player_filter != "All":
+    df_filtered = df_filtered[df_filtered["Player"] == player_filter]
 
-# Filter and show player evolution
-df_player = df[df["Player"] == selected_player].sort_values("Round")
+# Show table
+st.subheader("Filtered Match Data")
+st.dataframe(df_filtered[["Round", "Player", "Cavalry/Opponent", "Local/Visit", "Minutes played", "Goals", "Assists"]].reset_index(drop=True))
 
-st.subheader(f"Evolution of {selected_player}")
+# If a single player selected, show evolution
+if player_filter != "All":
+    df_player = df[df["Player"] == player_filter].sort_values("Round")
 
-for _, row in df_player.iterrows():
-    st.markdown(f"**Round {row['Round']}** - Opponent: {row['Cavalry/Opponent']} | Minutes: {row['Minutes played']} | Goals: {row['Goals']} | Assists: {row['Assists']}")
-    try:
-        response = requests.get(row["heatmap"])
-        image = Image.open(BytesIO(response.content))
-        st.image(image, width=350)
-    except:
-        st.warning(f"Could not load heatmap for Round {row['Round']}")
+    st.subheader(f"Evolution of {player_filter}")
+
+    for _, row in df_player.iterrows():
+        st.markdown(f"**Round {row['Round']}** - Opponent: {row['Cavalry/Opponent']} | Minutes: {row['Minutes played']} | Goals: {row['Goals']} | Assists: {row['Assists']}")
+        try:
+            response = requests.get(row["heatmap"])
+            image = Image.open(BytesIO(response.content))
+            st.image(image, width=350)
+        except:
+            st.warning(f"Could not load heatmap for Round {row['Round']}")
