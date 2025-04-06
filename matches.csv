@@ -1,4 +1,12 @@
-Round,Local/Visit,Cavalry/Opponent,Player,heatmap,Minutes played,Goals,Assists
-1,visit,Forge,Ali Musse,https://www.figpii.com/blog/wp-content/uploads/2022/11/heatmap-1536x1036.jpg,77,0,0
-1,local,Cavalry,Eryk Kobza,https://www.figpii.com/blog/wp-content/uploads/2022/11/heatmap-1536x1036.jpg,90,0,1
-2,visit,Pacific,Ali Musse,https://www.figpii.com/blog/wp-content/uploads/2022/11/heatmap-1536x1036.jpg,84,1,0
+Round,Local/Visit,Cavalry/Opponent,Team,Player,heatmap,Minutes played,Goals,Assists,Saves,Goal Against
+1,visit,Forge,Cavalry,Marco Carducci,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-carducci.png,90,0,0,3,1
+1,visit,Forge,Cavalry,Field,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-field.png,,,,,
+1,visit,Forge,Cavalry,Aird,https://raw.githubusercontent.com/felipeorma/heatmap/main/heatmap/4-5-aird.png,,,,,
+1,visit,Forge,Cavalry,,,,,,,
+1,visit,Forge,Cavalry,,,,,,,
+1,visit,Forge,Cavalry,,,,,,,
+1,visit,Forge,Cavalry,,,,,,,
+1,visit,Forge,Cavalry,,,,,,,
+1,visit,Forge,Cavalry,,,,,,,
+1,visit,Forge,Cavalry,,,,,,,
+1,visit,Forge,Cavalry,,,,,,,
