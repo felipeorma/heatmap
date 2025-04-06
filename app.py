@@ -151,7 +151,7 @@ if selected_player:
 # Footer signature
 st.markdown("""
 <div class='footer'>
-    Made by Felipe Ormazabalss  |  <em>Soccer Scout / Data Analyst</em>
+    Made by Felipe Ormazabal  |  <em>Soccer Scout / Data Analyst</em>
 </div>
 """, unsafe_allow_html=True)
 
