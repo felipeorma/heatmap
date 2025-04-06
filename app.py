@@ -19,7 +19,6 @@ st.title("⚽ Cavalry FC - Player Heatmap Match Dashboard")
 
 # Load match data
 @st.cache_data
-
 def load_data():
     df = pd.read_csv("matches.csv")
     df["Date"] = pd.to_datetime(df["Date"], errors='coerce')
@@ -57,9 +56,13 @@ for i in range(0, len(players_to_show), 3):
             player_name = players_to_show[i + j]
             player_data = df_filtered[df_filtered["Player"] == player_name].iloc[0]
             try:
-                response = requests.get(player_data["photo"])
+                headers = {"User-Agent": "Mozilla/5.0"}
+                response = requests.get(player_data["photo"], headers=headers)
                 img = Image.open(BytesIO(response.content))
-                col.image(img, caption=player_name, use_column_width=True)
+                col.image(img, use_column_width=True)
+                col.markdown(f"**{player_name}**")
+                col.markdown(f"Team: `{player_data['Team']}`")
+                col.markdown(f"Position: `{player_data.get('Position', 'N/A')}`")
             except:
                 col.warning("Image not found")
             if col.button(f"View Heatmaps - {player_name}"):
@@ -75,7 +78,8 @@ if "selected_player" in st.session_state:
         st.markdown(f"**Round {row['Round']}** - Date: `{row['Date'].date()}` - Opponent: `{row['Cavalry/Opponent']}`")
         st.markdown(f"Minutes: `{row['Minutes played']}` | Goals: `{row['Goals']}` | Assists: `{row['Assists']}` | Saves: `{row['Saves']}` | Goals Against: `{row['Goal Against']}`")
         try:
-            response = requests.get(row["heatmap"])
+            headers = {"User-Agent": "Mozilla/5.0"}
+            response = requests.get(row["heatmap"], headers=headers)
             image = Image.open(BytesIO(response.content))
             st.image(image, width=400)
         except:
