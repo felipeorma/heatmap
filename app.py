@@ -57,7 +57,9 @@ for i in range(0, len(players_to_show), 3):
             player_name = players_to_show[i + j]
             player_data = df_filtered[df_filtered["Player"] == player_name].iloc[0]
             try:
-                col.image(player_data["photo"], caption=player_name, use_column_width=True)
+                response = requests.get(player_data["photo"])
+                img = Image.open(BytesIO(response.content))
+                col.image(img, caption=player_name, use_column_width=True)
             except:
                 col.warning("Image not found")
             if col.button(f"View Heatmaps - {player_name}"):
@@ -78,4 +80,3 @@ if "selected_player" in st.session_state:
             st.image(image, width=400)
         except:
             st.warning(f"⚠️ Could not load heatmap for Round {row['Round']}")
-
