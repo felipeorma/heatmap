@@ -120,7 +120,8 @@ for idx, player_name in enumerate(players_list):
             if player_data["Team"] == "Cavalry":
                 st.image(player_data["Photo"], width=70, use_container_width=False)
             pos_group = get_position_group(player_data["Position"])
-            st.markdown(f"<div class='player-info'><strong>{player_name}</strong><br><span>{player_data['Team']}</span><br><span class='position-badge {pos_group}'>{player_data['Position']}</span></div>", unsafe_allow_html=True)
+            team_label = player_data['Team'] if player_data['Team'] == 'Cavalry' else f"Opponent ({player_data['Cavalry/Opponent']})"
+            st.markdown(f"<div class='player-info'><strong>{player_name}</strong><br><span>{team_label}</span><br><span class='position-badge {pos_group}'>{player_data['Position']}</span></div>", unsafe_allow_html=True)
             st.markdown("</div>", unsafe_allow_html=True)
         except:
             st.warning("Image not found")
@@ -146,4 +147,3 @@ if selected_player:
             st.image(image, width=300)
         except:
             st.warning(f"⚠️ Could not load heatmap for Round {row['Round']}")
-
