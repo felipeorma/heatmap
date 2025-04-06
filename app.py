@@ -12,7 +12,7 @@ st.title("⚽ Player Field Visualization")
 # Load all match files
 @st.cache_data
 def load_data():
-    files = ["matches_example.csv"]
+    files = ["matches.csv"]
     df = pd.concat([pd.read_csv(f) for f in files])
     return df
 
