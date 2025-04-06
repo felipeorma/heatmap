@@ -21,6 +21,14 @@ st.markdown("""
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
             width: 100%;
             text-align: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .player-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .opponent-card {
+            background-color: #f3f3f3 !important;
         }
         .player-img {
             border-radius: 50%;
