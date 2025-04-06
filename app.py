@@ -17,7 +17,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.title("⚽ Cavalry FC - Player Match Dashboard")
+st.title("⚽ Cavalry FC - Player Heatmap Match Dashboard")
 
 # Load match data
 @st.cache_data
