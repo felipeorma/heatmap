@@ -9,11 +9,10 @@ st.set_page_config(layout="wide")
 
 st.title("⚽ Player Field Visualization")
 
-# Load all match files
+# Load match data
 @st.cache_data
 def load_data():
-    files = ["matches.csv"]
-    df = pd.concat([pd.read_csv(f) for f in files])
+    df = pd.read_csv("matches.csv")
     return df
 
 # Load football field image
