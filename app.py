@@ -167,7 +167,7 @@ if selected_player:
 st.markdown("""
 ---
 <div class='footer'>
-  Created by **Felipe Ormazabal<br>
+  Created by Felipe Ormazabal<br>
   Soccer Scout & Data Analyst
 </div>
 """, unsafe_allow_html=True)
