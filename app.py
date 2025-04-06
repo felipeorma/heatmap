@@ -48,22 +48,18 @@ st.markdown("""
         .MF { background-color: #ffc107; color: black; }
         .FW { background-color: #dc3545; }
         .N_A { background-color: #6c757d; }
-        .footer {
-            margin-top: 4rem;
-            text-align: center;
-            font-size: 0.85rem;
-            color: #666;
-        }
     </style>
 """, unsafe_allow_html=True)
 
 st.title("⚽ Cavalry FC - Player Heatmap Match Dashboard")
 
 @st.cache_data
+
 def load_data():
     df = pd.read_csv("matches.csv")
     df["Date"] = pd.to_datetime(df["Date"], errors='coerce')
     df = df.sort_values("Date", ascending=False)
+    df["Team"] = df["Team"].apply(lambda x: "Cavalry" if str(x).strip().lower() == "cavalry" else "Opponent")
     return df.fillna(0)
 
 df = load_data()
@@ -71,6 +67,7 @@ df["Round"] = df["Round"].astype(str)
 
 with st.sidebar:
     st.header("🔎 Filters")
+    team_view = st.radio("Show Players From:", ["Cavalry", "Opponent"], index=0)
     round_filter = st.selectbox("Match Round", ["All"] + sorted(df["Round"].unique().tolist()))
     side_filter = st.selectbox("Team Side", ["All"] + sorted(df["Local/Visit"].astype(str).unique().tolist()))
     opponent_filter = st.selectbox("Opponent", ["All"] + sorted(df["Cavalry/Opponent"].astype(str).unique().tolist()))
@@ -78,6 +75,7 @@ with st.sidebar:
     date_filter = st.selectbox("Match Date", ["All"] + sorted(df["Date"].dt.date.astype(str).unique().tolist()))
 
 df_filtered = df[df["Player"].astype(str) != "0"].copy()
+df_filtered = df_filtered[df_filtered["Team"] == team_view]
 if round_filter != "All":
     df_filtered = df_filtered[df_filtered["Round"] == round_filter]
 if side_filter != "All":
@@ -119,7 +117,8 @@ for idx, player_name in enumerate(players_list):
     with cols[idx % 6]:
         try:
             st.markdown("<div class='player-card'>", unsafe_allow_html=True)
-            st.image(player_data["Photo"], width=70, use_container_width=False)
+            if player_data["Team"] == "Cavalry":
+                st.image(player_data["Photo"], width=70, use_container_width=False)
             pos_group = get_position_group(player_data["Position"])
             st.markdown(f"<div class='player-info'><strong>{player_name}</strong><br>Team: {player_data['Team']}<br><span class='position-badge {pos_group}'>{player_data['Position']}</span></div>", unsafe_allow_html=True)
             st.markdown("</div>", unsafe_allow_html=True)
@@ -147,11 +146,3 @@ if selected_player:
             st.image(image, width=300)
         except:
             st.warning(f"⚠️ Could not load heatmap for Round {row['Round']}")
-
-# Footer signature
-st.markdown("""
-<div class='footer'>
-    Made by Felipe Ormazabal  |  <em>Soccer Scout / Data Analyst</em>
-</div>
-""", unsafe_allow_html=True)
-
