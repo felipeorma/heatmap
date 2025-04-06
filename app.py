@@ -13,18 +13,21 @@ st.markdown("""
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin: 0.5rem;
+            justify-content: center;
+            margin: 0.5rem auto;
             padding: 0.5rem;
             background-color: #ffffff;
             border-radius: 10px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-            width: 120px;
+            width: 100%;
+            text-align: center;
         }
         .player-img {
             border-radius: 50%;
             width: 70px;
             height: 70px;
             object-fit: cover;
+            margin: auto;
         }
         .player-info {
             text-align: center;
@@ -110,7 +113,7 @@ for idx, player_name in enumerate(players_list):
     with cols[idx % 6]:
         try:
             st.markdown("<div class='player-card'>", unsafe_allow_html=True)
-            st.image(player_data["Photo"], width=70)
+            st.image(player_data["Photo"], width=70, use_column_width=False)
             pos_group = get_position_group(player_data["Position"])
             st.markdown(f"<div class='player-info'><strong>{player_name}</strong><br>Team: {player_data['Team']}<br><span class='position-badge {pos_group}'>{player_data['Position']}</span></div>", unsafe_allow_html=True)
             st.markdown("</div>", unsafe_allow_html=True)
@@ -138,3 +141,4 @@ if selected_player:
             st.image(image, width=300)
         except:
             st.warning(f"⚠️ Could not load heatmap for Round {row['Round']}")
+
