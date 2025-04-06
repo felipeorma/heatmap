@@ -73,7 +73,12 @@ if "selected_player" in st.session_state:
 
     for _, row in df_player.iterrows():
         st.markdown(f"**Round {row['Round']}** - Date: `{row['Date'].date()}` - Opponent: `{row['Cavalry/Opponent']}`")
-        st.markdown(f"Minutes: `{row['Minutes played']}` | Goals: `{row['Goals']}` | Assists: `{row['Assists']}` | Saves: `{row['Saves']}` | Goals Against: `{row['Goal Against']}`")
+
+        if row['Position'] == 'GK':
+            st.markdown(f"Minutes: `{row['Minutes played']}` | Saves: `{row['Saves']}` | Goals Against: `{row['Goal Against']}`")
+        else:
+            st.markdown(f"Minutes: `{row['Minutes played']}` | Goals: `{row['Goals']}` | Assists: `{row['Assists']}`")
+
         try:
             headers = {"User-Agent": "Mozilla/5.0"}
             response = requests.get(row["heatmap"], headers=headers)
@@ -81,4 +86,3 @@ if "selected_player" in st.session_state:
             st.image(image, width=400)
         except:
             st.warning(f"⚠️ Could not load heatmap for Round {row['Round']}")
-
